@@ -3,7 +3,7 @@ MAINTAINER Kirill Gusyatin "kirill.gus@gmail.com"
 
 RUN dpkg --add-architecture i386 \
     && apt-get update \
-    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 lib32z1 s3cmd expect wget curl git build-essential \
+    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 lib32z1 openjdk-8-jdk-headless libio-socket-ssl-perl libnet-ssleay-perl s3cmd expect wget curl git build-essential \
     && add-apt-repository -y ppa:webupd8team/java \
     && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
     && apt-get update \
@@ -18,8 +18,13 @@ RUN cd /opt \
     && tar xzf android-sdk.tgz && rm -f android-sdk.tgz \
     && chown -R root.root android-sdk-linux
 
+# Install android SDK, tools and platforms
+RUN cd /opt && curl https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz -o android-sdk.tgz && tar xzf android-sdk.tgz && rm android-sdk.tgz
+
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+
+RUN echo 'y' | /opt/android-sdk-linux/tools/android update sdk -u -a -t platform-tools,build-tools-23.0.3,android-23,extra-android-support,extra-google-m2repository,extra-android-m2repository
 
 COPY tools /opt/tools
 ENV PATH ${PATH}:/opt/tools
@@ -28,8 +33,6 @@ ENV ANDROID_PLATFORM_VERSION 23
 ENV ANDROID_BUILD_TOOLS_VERSION 23.0.3
 ENV ANDROID_EXTRA_PACKAGES android-22,build-tools-22.0.1,build-tools-23.0.0,build-tools-23.0.1,build-tools-23.0.2
 ENV ANDROID_REPOSITORIES extra-android-m2repository,extra-android-support,extra-google-m2repository
-
-RUN echo 'y' | /opt/android-sdk-linux/tools/android update sdk -u -a -t platform-tools,build-tools-23.0.3,android-23,extra-android-support,extra-google-m2repository,extra-android-m2repository
 
 RUN /opt/tools/android-accept-licenses.sh "android update sdk --no-ui --all --filter tools,platform-tools,build-tools-$ANDROID_BUILD_TOOLS_VERSION,android-$ANDROID_PLATFORM_VERSION,$ANDROID_EXTRA_PACKAGES,$ANDROID_REPOSITORIES"
 

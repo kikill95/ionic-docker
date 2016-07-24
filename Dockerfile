@@ -41,7 +41,4 @@ RUN npm install -g xcode-build-tools@3.2.1 phantomjs-prebuilt cordova ionic && n
 
 RUN mkdir -p /opt/workspace
 
-# Create app to build and preload gradle and maven dependencies
-RUN cd / && echo 'n' | ionic start app && cd /app && ionic platform add android && ionic build android && rm -rf * .??* && rm /root/.android/debug.keystore
-
 WORKDIR /opt/workspace

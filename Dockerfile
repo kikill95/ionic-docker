@@ -1,9 +1,14 @@
 FROM ubuntu:16.04
 MAINTAINER Kirill Gusyatin "kirill.gus@gmail.com"
 
-RUN dpkg --add-architecture i386 \
-    && apt-get update \
-    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 lib32z1 openjdk-8-jdk-headless libio-socket-ssl-perl libnet-ssleay-perl s3cmd expect wget curl git build-essential \
+# Install apt packages
+RUN apt-get update && apt-get install -y \
+    software-properties-common libncurses5 \
+    libstdc++6 zlib1g expect wget build-essential \
+    git lib32stdc++6 lib32z1 npm nodejs nodejs-legacy \
+    s3cmd build-essential curl openjdk-8-jdk-headless \
+    sendemail libio-socket-ssl-perl libnet-ssleay-perl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && add-apt-repository -y ppa:webupd8team/java \
     && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
     && apt-get update \
@@ -11,15 +16,9 @@ RUN dpkg --add-architecture i386 \
     && apt-get install -y oracle-java8-installer nodejs \
     && apt-get autoclean
 
-ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
-
-RUN cd /opt \
-    && wget --output-document=android-sdk.tgz --quiet $ANDROID_SDK_URL \
-    && tar xzf android-sdk.tgz && rm -f android-sdk.tgz \
-    && chown -R root.root android-sdk-linux
-
 # Install android SDK, tools and platforms
 RUN cd /opt && curl https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz -o android-sdk.tgz && tar xzf android-sdk.tgz && rm android-sdk.tgz
+ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
 
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools

@@ -2,18 +2,13 @@ FROM ubuntu:16.04
 MAINTAINER Kirill Gusyatin "kirill.gus@gmail.com"
 
 # Install apt packages
-RUN apt-get update && apt-get install -y \
-    software-properties-common libncurses5 \
-    libstdc++6 zlib1g expect wget build-essential \
-    git lib32stdc++6 lib32z1 npm nodejs nodejs-legacy \
-    s3cmd build-essential curl openjdk-8-jdk-headless \
-    sendemail libio-socket-ssl-perl libnet-ssleay-perl \
+RUN apt-get update && apt-get install -y git lib32stdc++6 lib32z1 npm nodejs nodejs-legacy s3cmd build-essential curl openjdk-8-jdk-headless libio-socket-ssl-perl libnet-ssleay-perl libncurses5 expect wget software-properties-common libstdc++6 zlib1g \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && add-apt-repository -y ppa:webupd8team/java \
     && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
     && apt-get update \
     && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
-    && apt-get install -y oracle-java8-installer nodejs \
+    && apt-get install -y oracle-java8-installer \
     && apt-get autoclean
 
 # Install android SDK, tools and platforms

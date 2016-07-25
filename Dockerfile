@@ -18,7 +18,7 @@ ENV ANDROID_HOME /opt/android-sdk-linux
 RUN echo 'y' | /opt/android-sdk-linux/tools/android update sdk -u -a -t platform-tools,build-tools-23.0.3,android-23,extra-android-support,extra-google-m2repository,extra-android-m2repository
 
 # Install npm packages
-RUN npm i -g xcode-build-tools@3.2.1 phantomjs-prebuilt cordova ionic gulp bower && npm cache clean
+RUN npm i -g xcode-build-tools@3.2.1 cordova ionic gulp bower && npm cache clean
 
 # Create dummy app to build and preload gradle and maven dependencies
 RUN cd / && echo 'n' | ionic start app && cd /app && ionic platform add android && ionic build android && rm -rf * .??* && rm /root/.android/debug.keystore
